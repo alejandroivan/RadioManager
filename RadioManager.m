@@ -205,6 +205,13 @@ static RadioManager *__radioManagerSingleton;
         return;
     }
     
+    if ( ! self.streamUrl ) {
+        LOG_RADIOMANAGER(@"[RadioManager] - play (The player doesn't have a streamUrl defined.)");
+        _status = RadioManagerStatusStopped;
+        [self delegate_callMethod:@selector(RMStopped)];
+        return;
+    }
+    
     LOG_RADIOMANAGER(@"[RadioManager] -play");
     
     if ( self.status == RadioManagerStatusStopped ) { // If the radio is stopped, a new AVPlayer instance should be created to play.
@@ -217,6 +224,7 @@ static RadioManager *__radioManagerSingleton;
     }
     else if ( self.status == RadioManagerStatusPaused ) { // If the radio is paused, we simply continue the playback.
         _status = RadioManagerStatusPlaying; // At this point, we already have some data buffered, so the playback continues instantly.
+        _hasPlayedBefore = YES;
         
         if ( self.player.status == AVPlayerStatusReadyToPlay ) { // Inform the delegate of the "playing" status when appropiate.
             [self delegate_callMethod:@selector(RMPlaying)];
@@ -376,6 +384,7 @@ static RadioManager *__radioManagerSingleton;
                 if ( self.player.rate != 0 ) {
                     // Playing
                     _status = RadioManagerStatusPlaying;
+                    _hasPlayedBefore = YES;
                     [self delegate_callMethod:@selector(RMPlaying)];
                 }
             }

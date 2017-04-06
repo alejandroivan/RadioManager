@@ -124,6 +124,7 @@ typedef NS_ENUM(NSInteger, RadioManagerStatus) {
 #pragma mark Properties
 @property (assign, nonatomic) BOOL pauseStopsPlaying; // The pause button should stop instead of pausing.
 @property (assign, nonatomic, readonly) BOOL isPlaying; // The streaming is playing (either loading or actually playing audio).
+@property (assign, nonatomic, readonly) BOOL hasPlayedBefore; // The streaming have played at least once.
 
 #pragma mark Instance methods
 // These methods control playback.
