@@ -409,7 +409,7 @@ static RadioManager *__radioManagerSingleton;
             else {
                 // Or... we give [NSNull null] and the original metadata if the parser can't work with it.
                 parsedMetadata = @{
-                                   @"original"  : metadataStr,
+                                   @"original"  : metadataStr ?: [NSNull null],
                                    @"title"     : [NSNull null],
                                    @"artist"    : [NSNull null]
                                    };
