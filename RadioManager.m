@@ -169,7 +169,6 @@ static RadioManager *__radioManagerSingleton;
         // The player is playing, simulate a "stop" using seek & pause
         
         [self.player seekToTime:CMTimeMake(0, 1)]; // Seeks to initial time
-        [self.player pause]; // Pause the player.
     }
     
     // Change the current item of the player
@@ -362,7 +361,16 @@ static RadioManager *__radioManagerSingleton;
                 }
                 else {
                     LOG_RADIOMANAGER(@"[RadioManager] RATE = 0 (Paused.)");
-                    [self delegate_callMethod:@selector(RMPaused)];
+                    
+                    if ( ! self.playerItem.playbackLikelyToKeepUp && ! self.playerItem.playbackBufferFull ) {
+                        [self delegate_callMethod:@selector(RMPaused)];
+                    }
+                    else {
+                        // Sometimes the player stops (pauses) and gets stalled, but playbackIsLikelyToKeepUp is YES.
+                        // In this case, resume the playback and don't inform the delegate of this condition.
+                        LOG_RADIOMANAGER(@"[%@] Playback is likely to keep up, continue playing without reporting the pause status.", NSStringFromClass(self.class));
+                        [self.player play];
+                    }
                 }
             }
         }
